@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Draw.js — Web Drawing App</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body class="light">
+    <div id="app">
+      <!-- Global top bar (app controls) -->
+      <header class="global-topbar">
+        <div class="gt-left">
+          <div class="brand">Draw.js</div>
+        </div>
+        <nav class="gt-center">
+          <button class="gt-btn">↶ Undo</button>
+          <button class="gt-btn">↷ Redo</button>
+          <button class="gt-btn">💾 Save</button>
+          <button class="gt-btn">📂 Load</button>
+          <button class="gt-btn">⬆ Import</button>
+          <button class="gt-btn">⬇ Export</button>
+          <button class="gt-btn">Grid</button>
+          <button class="gt-btn">Clear</button>
+        </nav>
+        <div class="gt-right">
+          <label class="gt-toggle">Dark <input id="darkToggleHeader" type="checkbox"></label>
+        </div>
+      </header>
+
+      <aside class="toolbar">
+        <div class="tools card">
+          <button class="tool active" data-tool="pencil" title="Pencil (B)" aria-label="Pencil">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M3 21l3-1 11-11 1-3-3 1L4 18l-1 3z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M14 6l4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+          <button class="tool" data-tool="eraser" title="Eraser (E)" aria-label="Eraser">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M3 17L9 11l6 6-6 6H3v-6z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M14 6l4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" opacity="0.9"/>
+            </svg>
+          </button>
+          <button class="tool" data-tool="fill" title="Fill Bucket (G)" aria-label="Fill">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M3 17l9-9 7 7-9 9-7-7z" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M14 7l3-3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+              <circle cx="16.5" cy="16.5" r="1.5" fill="currentColor" />
+            </svg>
+          </button>
+          <button class="tool" data-tool="text" title="Text (T)" aria-label="Text">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M6 4h12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+              <path d="M12 4v16" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+              <path d="M8 20h8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" opacity="0.6"/>
+            </svg>
+          </button>
+          <button class="tool" data-tool="line" title="Line (L)" aria-label="Line">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M4 20L20 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+            </svg>
+          </button>
+          <button class="tool" data-tool="rect" title="Rectangle (R)" aria-label="Rectangle">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <rect x="4" y="6" width="16" height="12" rx="2" stroke="currentColor" stroke-width="1.6" fill="none"/>
+            </svg>
+          </button>
+          <button class="tool" data-tool="circle" title="Circle (O)" aria-label="Circle">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <circle cx="12" cy="12" r="6" stroke="currentColor" stroke-width="1.6" fill="none"/>
+            </svg>
+          </button>
+        </div>
+
+        <div class="actions card">
+          <button id="undo" title="Undo (Ctrl+Z)">↶ Undo</button>
+          <button id="redo" title="Redo (Ctrl+Y)">↷ Redo</button>
+          <button id="clear" title="Clear canvas">Clear</button>
+        </div>
+
+        <!-- left toolbar continues to hold compact controls (tools, actions) -->
+      </aside>
+
+      <!-- Right side panel: import/export, layers, misc to reduce left-side clutter -->
+      <aside class="sidebar-right">
+        <div class="panels card">
+          <div class="export-toggle" style="margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;gap:12px">
+            <label style="display:flex;align-items:center;gap:8px">Transparent BG <input id="exportTransparent" type="checkbox"></label>
+            <label style="display:flex;align-items:center;gap:8px">Scale
+              <select id="exportScale"><option value="1">1×</option><option value="2">2×</option><option value="4">4×</option></select>
+            </label>
+          </div>
+          <label>Color
+            <input id="color" type="color" value="#2aa198">
+          </label>
+          <label>Brush
+            <input id="size" type="range" min="1" max="120" value="6">
+          </label>
+          <label>Opacity
+            <input id="opacity" type="range" min="0" max="1" step="0.01" value="1">
+          </label>
+          <label>Pixel Mode
+            <input id="pixelMode" type="checkbox">
+          </label>
+          <label>Grid
+            <input id="gridToggle" type="checkbox">
+          </label>
+          <label>Snap to Grid
+            <input id="snapToggle" type="checkbox">
+          </label>
+        </div>
+
+        <div class="files card">
+          <input id="importFile" type="file" accept="image/*" hidden>
+          <button id="importBtn" title="Import an image to a new layer">Import Image</button>
+          <button id="saveLocal" title="Save project to localStorage">Save to Local</button>
+          <button id="loadLocal" title="Load project from localStorage">Load from Local</button>
+          <div class="export-row">
+          </div>
+          <button id="exportPNG">Export PNG</button>
+          <button id="exportJPG">Export JPG</button>
+          <button id="exportSVG">Export SVG</button>
+          <button id="saveProjectFs" title="Save project file (.draw) using File System Access API if available">Save Project (.draw)</button>
+          <input id="openProjectFile" type="file" accept=".draw,application/json" hidden>
+          <button id="openProjectBtn">Open Project</button>
+        </div>
+
+        <!-- export-options moved into panels above color picker -->
+
+        <div class="layers card">
+          <div class="layers-header">Layers <button id="addLayer" title="Add new layer">＋</button></div>
+          <ul id="layersList" class="layers-list"></ul>
+        </div>
+
+        <div class="misc card">
+          <label>Dark Mode
+            <input id="darkToggle" type="checkbox">
+          </label>
+        </div>
+      </aside>
+
+      <main class="canvas-wrap">
+        <div class="canvas-area">
+          <div class="paper">
+            <canvas id="canvas"></canvas>
+            <canvas id="overlay"></canvas>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <script src="app.js" defer></script>
+  </body>
+</html>
