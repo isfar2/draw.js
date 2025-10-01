@@ -55,18 +55,14 @@ body{margin:0;font-family:Inter,system-ui,Arial,Helvetica,sans-serif;background:
 #canvas{image-rendering: crisp-edges}
 
 #overlay{z-index:2}
-/* make overlay click-through by default so pointer events reach the main canvas
-  (we'll enable overlay pointer-events in JS for tools that need it) */
 #overlay{pointer-events:none}
 #canvas{z-index:1}
 
 .credits{font-size:0.75rem;opacity:0.7;margin-top:auto}
 
-/* Right sidebar */
 .sidebar-right{width:300px;display:flex;flex-direction:column;gap:12px;padding-top:72px;position:fixed;right:12px;top:76px;bottom:12px;z-index:30}
 .sidebar-right .card{margin-bottom:6px}
 
-/* Make sure canvas area leaves room for both sidebars when calculating visible size */
 .canvas-wrap{min-width:400px}
 
 .files .export-row{display:flex;gap:8px;align-items:center;margin:8px 0}
@@ -82,7 +78,7 @@ body.dark{
   background:#000;
   color:#ddd;
 }
-/* Topbar, sidebars and canvas gutters should be dark to form a proper dark chrome */
+
 body.dark .global-topbar{background:#000;border-bottom-color:rgba(255,255,255,0.04)}
 body.dark .global-topbar .brand{color:#cfece6}
 body.dark .global-topbar .gt-btn{color:#ddd}
@@ -98,33 +94,27 @@ body.dark .actions button,.files button{background:rgba(255,255,255,0.03);border
 .export-toggle{padding:6px 8px;border-radius:8px;background:var(--panel);border:1px solid rgba(16,24,32,0.04)}
 .export-toggle label{display:flex;align-items:center;gap:8px}
 
-/* Dark-mode-specific tweaks for controls and inputs */
 body.dark .export-toggle{background:#0f1113;border-color:rgba(255,255,255,0.04);color:#ddd}
 body.dark input, body.dark select, body.dark textarea{background:#0b0c0d;color:#ddd;border:1px solid rgba(255,255,255,0.04)}
 body.dark input[type="color"]{background:#111}
 body.dark .panels input[type="range"]{accent-color: #2aa198}
 
-/* floating text tool panel */
 .text-tool-panel{position:fixed;left:84px;top:86px;z-index:60;background:var(--card);padding:12px;border-radius:10px;box-shadow:0 8px 30px rgba(12,12,12,0.06);display:none}
 .text-tool-panel.show{display:block}
 .text-tool-panel button{padding:6px 10px;border-radius:8px;border:1px solid rgba(16,24,32,0.06);background:var(--panel);cursor:pointer}
 
-/* Dark-mode styling for the floating text panel */
 body.dark .text-tool-panel{ background:#0f1113; color:#ddd; border:1px solid rgba(255,255,255,0.03); }
 body.dark .text-tool-panel button{ background: rgba(255,255,255,0.02); color:#ddd; border-color: rgba(255,255,255,0.03); }
 body.dark .text-tool-panel input, body.dark .text-tool-panel select, body.dark .text-tool-panel textarea{ background:#0b0c0d; color:#ddd; border:1px solid rgba(255,255,255,0.04); }
 
-/* Ensure main chrome (toolbar, sidebars, header) sits above canvas overlays so controls are clickable */
 .toolbar, .global-topbar, .sidebar-right{ z-index:1000 }
 
-/* Keep canvas replacement and its canvases beneath the UI chrome */
 .canvas-replacement{ z-index:1 }
 
 .text-selected-outline{position:absolute;border:2px dashed rgba(33,150,243,0.9);pointer-events:none;z-index:9998}
 .text-delete-mobile{position:fixed;right:18px;bottom:18px;background:#ff4d4f;color:#fff;padding:10px;border-radius:999px;box-shadow:0 8px 24px rgba(0,0,0,0.15);display:none;z-index:99999}
 .text-delete-mobile.show{display:block}
 
-/* small helpers for card header and subtle separators */
 .card{border:1px solid rgba(16,24,32,0.04)}
 .layers-header{padding-bottom:6px;border-bottom:1px dashed rgba(16,24,32,0.04);margin-bottom:8px}
 
@@ -135,7 +125,6 @@ body.dark .text-tool-panel input, body.dark .text-tool-panel select, body.dark .
   .canvas-wrap{width:100%;order:2}
 }
 
-/* Force readable colors inside cards to avoid accidental inheritance */
 .card, .card *{
   color: var(--secondary) !important;
 }
