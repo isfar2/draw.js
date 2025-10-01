@@ -333,4 +333,4 @@
   window.addEventListener('resize', ()=> resizeCanvas(width,height));
 
   window.drawApp = {canvas, ctx, pushHistory, setTool, exportImage};
-})();
+})(); 
